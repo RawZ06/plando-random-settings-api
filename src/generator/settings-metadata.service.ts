@@ -37,24 +37,26 @@ export class SettingsMetadataService {
     const settingInfos: Record<string, any> = {};
 
     // Regex to find setting definitions
-    // Look for 'setting_name': SettingInfo(...)
-    // This is a bit complex to parse with regex perfectly,
-    // but we can try to extract the main parts.
-
-    const settingRegex = /'([^']+)':\s*SettingInfo\(([\s\S]*?)\),\s*\n/g;
+    // Look for setting_name = Type(...)
+    const settingRegex = /\s+(\w+)\s*=\s*(\w+)\(([\s\S]*?)\n\s+\)/g;
     let match;
 
     while ((match = settingRegex.exec(content)) !== null) {
       const name = match[1];
-      const body = match[2];
+      const typeStr = match[2];
+      const body = match[3];
 
-      const typeMatch = /type=([^,\s)]+)/.exec(body);
       let type: any = String;
-      if (typeMatch) {
-        const typeStr = typeMatch[1];
-        if (typeStr === 'bool') type = Boolean;
-        else if (typeStr === 'int') type = Number;
-        else type = String;
+      if (typeStr === 'Checkbutton') type = Boolean;
+      else if (typeStr === 'IntSpinbox') type = Number;
+      else if (typeStr === 'MultipleSelect') type = Array;
+      else {
+        const typeMatch = /type=([^,\s)]+)/.exec(body);
+        if (typeMatch) {
+          const innerTypeStr = typeMatch[1];
+          if (innerTypeStr === 'bool') type = Boolean;
+          else if (innerTypeStr === 'int') type = Number;
+        }
       }
 
       const disableMatch = /disable=({[\s\S]*?})/.exec(body);

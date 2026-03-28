@@ -114,6 +114,14 @@ export class GenerateService {
             randomSettings[setting] = false;
         } else if (info.type === Number) {
           randomSettings[setting] = Number(value);
+        } else if (info.type === Array) {
+          if (!Array.isArray(value)) {
+            if (value === 'true' || value === true || value === 'True') {
+              randomSettings[setting] = MS_OPTION_LOOKUP[setting] || [];
+            } else {
+              randomSettings[setting] = [];
+            }
+          }
         }
       } else if (value === 'true' || value === 'false') {
         // Fallback for settings not in metadata (like those from conditionals)
