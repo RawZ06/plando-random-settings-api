@@ -126,6 +126,21 @@ export const MS_OPTION_LOOKUP = {
     'Spirit Medallion',
   ],
   ocarina_songs: ['frog', 'warp', 'frogs2'],
+  shuffle_fairies: [
+    'GossipFairy',
+    'ButterflyFairy',
+    'SunsStormsFairy',
+    'FountainFairy',
+    'BeanPlantFairy',
+  ],
+  random_starting_items_exclude: [
+    'songs',
+    'bombchus',
+    'shields',
+    'deku_upgrades',
+    'health_upgrades',
+    'junk',
+  ],
 };
 
 export const INVALID_SETTINGS = [

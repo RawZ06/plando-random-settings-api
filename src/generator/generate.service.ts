@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WeightService } from './weight.service';
 import { ConditionalsService } from './conditionals.service';
+import { HintsService } from './hints.service';
 import { SettingsMetadataService } from './settings-metadata.service';
 import { MS_OPTION_LOOKUP } from '../common/multiselects';
 import { geometricWeights } from '../common/utils';
@@ -14,6 +15,7 @@ export class GenerateService {
     private weightService: WeightService,
     private conditionalsService: ConditionalsService,
     private settingsMetadataService: SettingsMetadataService,
+    private hintsService: HintsService,
     private configService: ConfigService,
   ) {}
 
@@ -49,6 +51,11 @@ export class GenerateService {
       'ganon_bosskey_hearts',
       'triforce_goal_per_world',
       'triforce_count_per_world',
+      'lacs_tokens',
+      'lacs_hearts',
+      'lacs_medallions',
+      'lacs_stones',
+      'lacs_rewards',
     ];
     for (const nset of calculatedSettings) {
       const kwx = nset + '_max';
@@ -57,6 +64,15 @@ export class GenerateService {
       const nmin = weightOptions[kwn] !== undefined ? weightOptions[kwn] : 1;
       const range = nmax - nmin + 1;
       randomSettings[nset] = Math.floor(Math.random() * range) + nmin;
+    }
+
+    // Load Hint Distribution
+    if (randomSettings.hint_dist && randomSettings.hint_dist !== 'useless') {
+      try {
+        randomSettings.hint_dist_user = await this.hintsService.getHintDistribution(randomSettings.hint_dist);
+      } catch (e) {
+        this.logger.warn(`Could not load hint distribution: ${randomSettings.hint_dist}`);
+      }
     }
 
     // Apply conditionals
@@ -90,12 +106,35 @@ export class GenerateService {
       const info = metadata.setting_infos[setting];
       if (info) {
         if (info.type === Boolean) {
-          if (value === 'true') randomSettings[setting] = true;
-          else if (value === 'false') randomSettings[setting] = false;
+          if (value === 'true' || value === true || value === 'True') randomSettings[setting] = true;
+          else if (value === 'false' || value === false || value === 'False') randomSettings[setting] = false;
         } else if (info.type === Number) {
           randomSettings[setting] = Number(value);
         }
+      } else if (value === 'true' || value === 'false') {
+        // Fallback for settings not in metadata (like those from conditionals)
+        randomSettings[setting] = value === 'true';
       }
+    }
+
+    // Merge extraStartingItems (simplified, could be more complex)
+    if (startWith.starting_inventory.length > 0) {
+      randomSettings.starting_inventory = [
+        ...(randomSettings.starting_inventory || []),
+        ...startWith.starting_inventory,
+      ];
+    }
+    if (startWith.starting_songs.length > 0) {
+      randomSettings.starting_songs = [
+        ...(randomSettings.starting_songs || []),
+        ...startWith.starting_songs,
+      ];
+    }
+    if (startWith.starting_equipment.length > 0) {
+      randomSettings.starting_equipment = [
+        ...(randomSettings.starting_equipment || []),
+        ...startWith.starting_equipment,
+      ];
     }
 
     return {
