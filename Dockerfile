@@ -1,15 +1,17 @@
 # Stage 1: Build
 FROM node:22-alpine AS builder
 
-# Installation de pnpm
+# Configuration de pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 WORKDIR /app
 
-# Copie des fichiers de configuration pnpm et installation des dépendances
+# Copie des fichiers de configuration pnpm
 COPY pnpm-lock.yaml package.json ./
+
+# Installation des dépendances avec frozen-lockfile
 RUN pnpm install --frozen-lockfile
 
 # Copie du reste du code source
