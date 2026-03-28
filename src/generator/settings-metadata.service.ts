@@ -69,7 +69,7 @@ export class SettingsMetadataService {
             .replace(/None/g, 'null')
             .replace(/(\w+):/g, '"$1":'); // Quote keys if not quoted
           disable = JSON.parse(jsonStr);
-        } catch (e) {
+        } catch {
           // Fallback or ignore if too complex
         }
       }

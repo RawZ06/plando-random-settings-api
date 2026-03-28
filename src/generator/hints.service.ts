@@ -24,7 +24,9 @@ export class HintsService {
       this.hintsCache[distroName] = response.data;
       return this.hintsCache[distroName];
     } catch (error) {
-      this.logger.warn(`Failed to fetch hint distribution ${distroName}: ${error.message}`);
+      this.logger.warn(
+        `Failed to fetch hint distribution ${distroName}: ${error.message}`,
+      );
       // Return a basic placeholder if fetching fails to avoid breaking generation
       return {
         name: distroName,

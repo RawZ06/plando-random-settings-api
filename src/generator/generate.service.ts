@@ -5,7 +5,6 @@ import { ConditionalsService } from './conditionals.service';
 import { HintsService } from './hints.service';
 import { SettingsMetadataService } from './settings-metadata.service';
 import { MS_OPTION_LOOKUP } from '../common/multiselects';
-import { geometricWeights } from '../common/utils';
 
 @Injectable()
 export class GenerateService {
@@ -69,9 +68,12 @@ export class GenerateService {
     // Load Hint Distribution
     if (randomSettings.hint_dist && randomSettings.hint_dist !== 'useless') {
       try {
-        randomSettings.hint_dist_user = await this.hintsService.getHintDistribution(randomSettings.hint_dist);
-      } catch (e) {
-        this.logger.warn(`Could not load hint distribution: ${randomSettings.hint_dist}`);
+        randomSettings.hint_dist_user =
+          await this.hintsService.getHintDistribution(randomSettings.hint_dist);
+      } catch {
+        this.logger.warn(
+          `Could not load hint distribution: ${randomSettings.hint_dist}`,
+        );
       }
     }
 
@@ -106,8 +108,10 @@ export class GenerateService {
       const info = metadata.setting_infos[setting];
       if (info) {
         if (info.type === Boolean) {
-          if (value === 'true' || value === true || value === 'True') randomSettings[setting] = true;
-          else if (value === 'false' || value === false || value === 'False') randomSettings[setting] = false;
+          if (value === 'true' || value === true || value === 'True')
+            randomSettings[setting] = true;
+          else if (value === 'false' || value === false || value === 'False')
+            randomSettings[setting] = false;
         } else if (info.type === Number) {
           randomSettings[setting] = Number(value);
         }

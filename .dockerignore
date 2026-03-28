@@ -1,0 +1,15 @@
+node_modules
+dist
+pnpm-lock.yaml
+.env
+.git
+.gitignore
+*.md
+Dockerfile
+.dockerignore
+test
+coverage
+eslint.config.mjs
+nest-cli.json
+tsconfig.build.json
+tsconfig.json

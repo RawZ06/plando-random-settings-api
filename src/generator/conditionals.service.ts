@@ -12,8 +12,9 @@ export class ConditionalsService {
   ): void {
     for (const [cond, details] of Object.entries(conditionalList)) {
       if (details[0]) {
-        if (typeof (this as any)[cond] === 'function') {
-          (this as any)[cond](randomSettings, {
+        const method = (this as any)[cond];
+        if (typeof method === 'function') {
+          method.call(this, randomSettings, {
             weightDict,
             extraStartingItems,
             cparams: details.slice(1),
@@ -146,9 +147,14 @@ export class ConditionalsService {
     }
   }
 
-  split_collectible_bridge_conditions(randomSettings: any, { cparams }: any): void {
+  split_collectible_bridge_conditions(
+    randomSettings: any,
+    { cparams }: any,
+  ): void {
     const chanceOfCollectibleWincon = stringToInt(cparams[0]);
-    const typeweights = cparams[1].split('/').map((x: string) => parseInt(x, 10));
+    const typeweights = cparams[1]
+      .split('/')
+      .map((x: string) => parseInt(x, 10));
     const weights = cparams[2].split('/').map((x: string) => parseInt(x, 10));
 
     if (Math.random() * 100 >= chanceOfCollectibleWincon) {
@@ -221,9 +227,14 @@ export class ConditionalsService {
     }
   }
 
-  select_one_pots_crates_freestanding(randomSettings: any, { cparams }: any): void {
+  select_one_pots_crates_freestanding(
+    randomSettings: any,
+    { cparams }: any,
+  ): void {
     const chanceOneIsOn = stringToInt(cparams[0]);
-    const settingWeights = cparams[1].split('/').map((x: string) => parseInt(x, 10));
+    const settingWeights = cparams[1]
+      .split('/')
+      .map((x: string) => parseInt(x, 10));
     const weights = cparams[2].split('/').map((x: string) => parseInt(x, 10));
 
     if (Math.random() * 100 >= chanceOneIsOn) {
@@ -255,7 +266,10 @@ export class ConditionalsService {
     randomSettings: any,
     { cparams }: any,
   ): void {
-    if (!randomSettings['mix_entrance_pools'] || randomSettings['mix_entrance_pools'].length < 1) {
+    if (
+      !randomSettings['mix_entrance_pools'] ||
+      randomSettings['mix_entrance_pools'].length < 1
+    ) {
       return;
     }
 

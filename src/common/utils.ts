@@ -18,7 +18,7 @@ export function geometricWeights(
   }
 }
 
-export function stringToInt(val: any): number {
+export function stringToInt(val: string | number): number {
   if (typeof val !== 'string') {
     return val;
   }
