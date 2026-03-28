@@ -1,0 +1,22 @@
+{
+    "weights": {
+        "shuffle_overworld_entrances": {
+            "false": 1
+        },
+        "free_scarecrow": {
+            "true": 1
+        },
+        "damage_multiplier": {
+            "half": 1,
+            "normal": 2,
+            "double": 1
+        },
+        "triforce_hunt": {
+            "true": 1,
+            "false": 19
+        },
+        "starting_songs": [
+            "suns_song"
+        ]
+    }
+}

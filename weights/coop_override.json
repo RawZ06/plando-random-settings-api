@@ -1,0 +1,13 @@
+{
+    "weights": {
+        "bridge_tokens_max": 50,
+        "ganon_bosskey_tokens_max": 50,
+        "triforce_goal_per_world_max": 50,
+        "damage_multiplier": {
+            "normal": 1
+        },
+        "mq_dungeons_mode": {
+            "vanilla": 1
+        }
+    }
+}
